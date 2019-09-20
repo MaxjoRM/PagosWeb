@@ -1,0 +1,63 @@
+﻿@model IEnumerable<PagosWeb.Models.Facturas>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.FacturaRef)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Clientes.NombreCompleto)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FechaFactura)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MontoFactura)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Saldo)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Cancelado)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.FacturaRef)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Clientes.NombreCompleto)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FechaFactura)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MontoFactura)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Saldo)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Cancelado)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.FacturaId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.FacturaId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.FacturaId })
+        </td>
+    </tr>
+}
+
+</table>

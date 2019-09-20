@@ -1,0 +1,172 @@
+﻿@model PagosWeb.Models.Facturas
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h4>Facturas</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.FechaFactura, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.FechaFactura, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.FechaFactura, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.MontoFactura, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.MontoFactura, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.MontoFactura, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Saldo, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Saldo, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Saldo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClienteId, "ClienteId", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ClienteId, new { htmlAttributes = new { @class = "form-control hidden", } })
+               <input class="form-control" id="txtCliente" readonly/>   
+         
+                <button id="btnClientes" type="button" class="btn btn-primary" data-toggle="modal" data-target="#ClienteModal">
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+                @Html.ValidationMessageFor(model => model.ClienteId, "", new { @class = "text-danger" })
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Cancelado, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="checkbox">
+                @Html.EditorFor(model => model.Cancelado, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Cancelado, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Create" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+<!-- Modal -->
+<div class="modal fade" id="ClienteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table id="table-clientes" class="table table-responsive table-hover" style="width: 100%;">
+                    <thead>
+                        <th>Id</th>
+                        <th>Cedula</th>
+                        <th>Nombre Completo</th>
+                        <th>Accion</th>
+                    </thead>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    
+    <script>
+        var dataTable = null;
+        //carga el DataTable
+        $(function() {
+            dataTable = $("#table-clientes").DataTable({
+                "ajax": {
+                    "type": "GET",
+                    "url": "@Url.Action("Clientes","Facturas")",
+                    "dataType": "Json",
+                },
+                "columns": [
+                    { "data": "ClienteId" },
+                    { "data": "CedulaCliente" },
+                    { "data": "NombreCompleto" },
+                    {
+                        "data": "ClienteId", "render": function (data) {
+                            return "<button class='btn btn-primary'>Seleccionar</button>"
+                        }
+                    }
+                ]
+            });
+        });
+
+        //funcion seleccionar registro del DataTable
+        $(function () {
+            $("#table-clientes tbody").on("click", "button", function () {
+                let data = dataTable.row($(this).parents("tr")).data();
+                $("#ClienteId").val(data.ClienteId);
+                $("#txtCliente").val(data.NombreCompleto);
+                $('#ClienteModal').modal('toggle');
+            });
+        });
+        //$("#btnClientes").click(function () {
+        //    dtCustomer();
+        //    seleccionar(dataTable, "#table-clientes tbody");
+        //});
+        @*function dtCustomer() {
+            dataTable = $("#table-clientes").DataTable({
+                "destroy": "true",
+                "ajax": {
+                    "type": "GET",
+                    "url": "@Url.Action("Clientes","Facturas")",
+                "dataType": "Json",
+            },
+                "columns": [
+                    { "data": "ClienteId" },
+                    { "data": "CedulaCliente" },
+                    { "data": "NombreCompleto" },
+                    {
+                        "data": "ClienteId", "render": function (data) {
+                            return "<button class='btn btn-primary'>Seleccionar</button>"
+                        }
+                    }
+                ]
+        });
+        }*@
+        //function seleccionar(table,tbody) {
+        //    $(tbody).on("click", "button", function () {
+        //        var data = table.row($(this).parents("tr")).data();
+        //        $('#ClienteModal').modal('toggle');
+        //        console.log(data.ClienteId);
+        //        var data = null;
+        //    });
+        //}
+        //preguntar cuando las funciones no estan en el metodo principal
+    </script>
+}

@@ -1,0 +1,58 @@
+﻿@model PagosWeb.Models.Facturas
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Facturas</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Clientes.CedulaCliente)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Clientes.CedulaCliente)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FechaFactura)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FechaFactura)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MontoFactura)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MontoFactura)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Saldo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Saldo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Cancelado)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Cancelado)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.FacturaId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

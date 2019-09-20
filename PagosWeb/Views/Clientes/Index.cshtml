@@ -1,0 +1,51 @@
+﻿@model IEnumerable<PagosWeb.Models.Clientes>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.CedulaCliente)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NombresCliente)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ApellidosCliente)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DireccionCliente)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.CedulaCliente)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NombresCliente)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ApellidosCliente)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DireccionCliente)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.ClienteId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.ClienteId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.ClienteId })
+        </td>
+    </tr>
+}
+
+</table>

@@ -1,0 +1,164 @@
+﻿
+@{
+    ViewBag.Title = "Historial";
+}
+
+<h2 class="text-center">Historial de Abonos</h2>
+<div class="form-horizontal">
+    <div class="form-group">
+        @Html.Label("Cliente", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-3">
+            <input class="form-control" id="ClienteId" type="hidden" />
+            <input class="form-control" id="txtCliente" readonly />
+        </div>
+        <div class="col-md-pu col-md-4">
+            <button id="btnClientes" type="button" class="btn btn-primary" data-toggle="modal" data-target="#ClienteModal">
+                <span class="glyphicon glyphicon-search"></span>
+            </button>
+        </div>
+
+    </div>
+    <div class="form-group">
+        @Html.Label("Facturas", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-3">
+            <select class="form-control" id="facturas"></select>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button class="btn btn-success" onclick="getAbonos()">Cargar Abonos</button>
+        </div>
+    </div>
+</div>
+<br />
+    <div class="row">
+        <div class="table-responsive col-md-12">
+            <table id="table-abonos" class="table">
+                <thead>
+                    <tr>
+                        <td>Fecha Abono</td>
+                        <td>Monto Abonado</td>
+                        <td>Saldo Anterior</td>
+                        <td>Notas</td>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+
+<!-- Modal -->
+<div class="modal fade" id="ClienteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("_tableClientes")
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts{
+        <!-- Datatable -->
+<link href="~/Content/DataTables/media/css/dataTables.bootstrap.min.css" rel="stylesheet" />
+<link href="~/Content/DataTables/media/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="~/Content/DataTables/media/css/dataTables.jqueryui.min.css" rel="stylesheet" />
+<script src="~/Scripts/DataTables/media/js/dataTables.bootstrap.min.js"></script>
+<script src="~/Scripts/DataTables/media/js/dataTables.jqueryui.min.js"></script>
+<script src="~/Scripts/DataTables/media/js/jquery.dataTables.min.js"></script>
+<script src="~/Scripts/Fecha/fecha.js"></script>
+<script>
+
+    var dataTableAbonos = null;
+    var dataTable = null;
+
+    function llenarFacturas() {
+        var url="@Url.Action("getFacturasCliente", "Facturas")";
+        var data=$("#ClienteId").val();
+        $.get(url, { clienteId: data }, function (data) {
+            $("#facturas").empty();
+            $.each(data, function (index, row) {
+                $("#facturas").append("<option value=" + row.FacturaId + ">" +row.FacturaRef+ "</option>");
+            });
+        });
+    }
+
+    $("#txtCliente").change(function () {
+        console.log("entro al change");
+
+    });
+    llenarFacturas();
+
+    //instancia del dataTable de Abonos
+    $(function () {
+        dataTableAbonos = $("#table-abonos").DataTable({
+            "searching": false,
+            "language": {
+                "emptyTable": "No hay abonos Cargados"
+            }
+        });
+    });
+    //datatable Abonos
+    function getAbonos() {
+        dataTableAbonos = $("#table-abonos").DataTable({
+            "ajax":{
+                "type":"GET",
+                "url":"@Url.Action("getAbonos","Abonos")",
+                "data":{"idfact":$("#facturas").val()},
+                "dataType":"Json"
+            },
+            "columns": [
+                { "data": "FechaAbono" },
+                { "data": "MontoAbono" },
+                { "data": "SaldoAnterior" },
+                { "data": "Notas" }
+            ],
+            "searching":false,
+            "destroy": true
+        });
+        return dataTableAbonos;
+    }
+    //carga el DataTable Clientes
+    $(function() {
+        dataTable = $("#table-clientes").DataTable({
+            "ajax": {
+                "type": "GET",
+                "url": "@Url.Action("Clientes","Facturas")",
+            "dataType": "Json",
+        },
+            "columns": [
+                { "data": "ClienteId" },
+                { "data": "CedulaCliente" },
+                { "data": "NombreCompleto" },
+                {
+                    "data": "ClienteId", "render": function (data) {
+                        return "<button class='btn btn-warning'><span class='glyphicon glyphicon-check'></span></button>"
+                    }
+                }
+            ]
+    });
+    });
+    //funcion seleccionar registro del DataTable
+    $(function () {
+        $("#table-clientes tbody").on("click", "button", function () {
+            let data = dataTable.row($(this).parents("tr")).data();
+            $("#ClienteId").val(data.ClienteId);
+            $("#txtCliente").val(data.NombreCompleto);
+            llenarFacturas();
+            $('#ClienteModal').modal('toggle');
+        });
+    });
+
+
+</script>
+}
+
+
